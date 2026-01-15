@@ -4490,6 +4490,8 @@ ${selectedText}`;
         async function saveEditedVerses() {
             if (!isEditAuthenticated) return false;
 
+            console.log('Saving edited verses:', JSON.stringify(editedVerses));
+
             try {
                 const response = await fetch(BIBLE_EDIT_API_URL, {
                     method: 'POST',
@@ -4501,7 +4503,10 @@ ${selectedText}`;
                     })
                 });
 
-                if (!response.ok) throw new Error('Save failed');
+                const result = await response.json();
+                console.log('Save response:', result);
+
+                if (!response.ok) throw new Error('Save failed: ' + JSON.stringify(result));
                 return true;
             } catch (err) {
                 console.error('Failed to save edits:', err);
@@ -4519,6 +4524,7 @@ ${selectedText}`;
         }
 
         function setEditedVerseText(translation, bookName, chapter, verseNum, text) {
+            console.log('setEditedVerseText:', translation, bookName, chapter, verseNum, '->', text.substring(0, 50));
             if (!editedVerses[translation]) editedVerses[translation] = {};
             if (!editedVerses[translation][bookName]) editedVerses[translation][bookName] = {};
             if (!editedVerses[translation][bookName][chapter]) editedVerses[translation][bookName][chapter] = {};
