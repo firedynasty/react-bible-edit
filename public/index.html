@@ -3828,10 +3828,6 @@ Psalm 111:10`
             const outputEl = document.getElementById('output');
             const filterButton = document.getElementById('filterButton');
 
-            // Debug: Log edited verses structure
-            console.log('displayChapter - editedVerses:', JSON.stringify(editedVerses).substring(0, 200));
-            console.log('displayChapter - currentBookName:', currentBookName, 'currentChapter:', currentChapter);
-
             // Reset bottom confirmation counter when changing chapters
             bottomConfirmationCount = 0;
 
@@ -4472,26 +4468,9 @@ ${selectedText}`;
             try {
                 const response = await fetch(BIBLE_EDIT_API_URL);
                 const data = await response.json();
-                console.log('API response:', data);
-                // API returns { files: { filename: content } }
                 const files = data.files || data;
                 if (files[BIBLE_EDITS_FILENAME]) {
-                    const rawContent = files[BIBLE_EDITS_FILENAME];
-                    console.log('Raw bible_edits.json content:', rawContent);
-                    editedVerses = JSON.parse(rawContent);
-                    console.log('Loaded edited verses:', JSON.stringify(editedVerses, null, 2));
-                    // Log all stored verses for debugging
-                    for (const trans in editedVerses) {
-                        for (const book in editedVerses[trans]) {
-                            for (const chap in editedVerses[trans][book]) {
-                                for (const verse in editedVerses[trans][book][chap]) {
-                                    console.log(`Stored edit: ${trans} ${book} ${chap}:${verse}`);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    console.log('No edited verses file found. Available files:', Object.keys(files));
+                    editedVerses = JSON.parse(files[BIBLE_EDITS_FILENAME]);
                 }
             } catch (err) {
                 console.error('Failed to load edits:', err);
@@ -4502,36 +4481,18 @@ ${selectedText}`;
         async function saveEditedVerses() {
             if (!isEditAuthenticated) return false;
 
-            const contentToSave = JSON.stringify(editedVerses, null, 2);
-            console.log('=== SAVE START ===');
-            console.log('Saving edited verses:', contentToSave);
-            // Log all verses being saved
-            for (const trans in editedVerses) {
-                for (const book in editedVerses[trans]) {
-                    for (const chap in editedVerses[trans][book]) {
-                        for (const verse in editedVerses[trans][book][chap]) {
-                            console.log(`Saving: ${trans} ${book} ${chap}:${verse}`);
-                        }
-                    }
-                }
-            }
-
             try {
                 const response = await fetch(BIBLE_EDIT_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         filename: BIBLE_EDITS_FILENAME,
-                        content: contentToSave,
+                        content: JSON.stringify(editedVerses, null, 2),
                         accessCode: editAccessCode
                     })
                 });
 
-                const result = await response.json();
-                console.log('Save response:', result);
-                console.log('=== SAVE END ===');
-
-                if (!response.ok) throw new Error('Save failed: ' + JSON.stringify(result));
+                if (!response.ok) throw new Error('Save failed');
                 return true;
             } catch (err) {
                 console.error('Failed to save edits:', err);
@@ -4541,15 +4502,10 @@ ${selectedText}`;
         }
 
         function getEditedVerseText(translation, bookName, chapter, verseNum) {
-            const result = editedVerses?.[translation]?.[bookName]?.[chapter]?.[verseNum] || null;
-            if (result) {
-                console.log('Found edited verse:', translation, bookName, chapter, verseNum, '->', result.substring(0, 50) + '...');
-            }
-            return result;
+            return editedVerses?.[translation]?.[bookName]?.[chapter]?.[verseNum] || null;
         }
 
         function setEditedVerseText(translation, bookName, chapter, verseNum, text) {
-            console.log('setEditedVerseText:', translation, bookName, chapter, verseNum, '->', text.substring(0, 50));
             if (!editedVerses[translation]) editedVerses[translation] = {};
             if (!editedVerses[translation][bookName]) editedVerses[translation][bookName] = {};
             if (!editedVerses[translation][bookName][chapter]) editedVerses[translation][bookName][chapter] = {};
