@@ -3828,6 +3828,10 @@ Psalm 111:10`
             const outputEl = document.getElementById('output');
             const filterButton = document.getElementById('filterButton');
 
+            // Debug: Log edited verses structure
+            console.log('displayChapter - editedVerses:', JSON.stringify(editedVerses).substring(0, 200));
+            console.log('displayChapter - currentBookName:', currentBookName, 'currentChapter:', currentChapter);
+
             // Reset bottom confirmation counter when changing chapters
             bottomConfirmationCount = 0;
 
@@ -4507,7 +4511,11 @@ ${selectedText}`;
         }
 
         function getEditedVerseText(translation, bookName, chapter, verseNum) {
-            return editedVerses?.[translation]?.[bookName]?.[chapter]?.[verseNum] || null;
+            const result = editedVerses?.[translation]?.[bookName]?.[chapter]?.[verseNum] || null;
+            if (result) {
+                console.log('Found edited verse:', translation, bookName, chapter, verseNum, '->', result.substring(0, 50) + '...');
+            }
+            return result;
         }
 
         function setEditedVerseText(translation, bookName, chapter, verseNum, text) {
