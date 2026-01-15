@@ -4467,10 +4467,15 @@ ${selectedText}`;
         async function loadEditedVerses() {
             try {
                 const response = await fetch(BIBLE_EDIT_API_URL);
-                const files = await response.json();
+                const data = await response.json();
+                console.log('API response:', data);
+                // API returns { files: { filename: content } }
+                const files = data.files || data;
                 if (files[BIBLE_EDITS_FILENAME]) {
                     editedVerses = JSON.parse(files[BIBLE_EDITS_FILENAME]);
-                    console.log('Loaded edited verses:', Object.keys(editedVerses));
+                    console.log('Loaded edited verses:', Object.keys(editedVerses), editedVerses);
+                } else {
+                    console.log('No edited verses file found. Available files:', Object.keys(files));
                 }
             } catch (err) {
                 console.error('Failed to load edits:', err);
