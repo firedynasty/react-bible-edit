@@ -4567,8 +4567,16 @@ ${selectedText}`;
 
         function cancelVerseEdit() {
             if (!currentlyEditing) return;
-            currentlyEditing.verseEl.classList.remove('editing');
-            displayChapter();
+            const { verseEl, originalText, translation, chapter, verseNum } = currentlyEditing;
+            verseEl.classList.remove('editing');
+
+            // Restore verse text without reloading entire chapter (which reloads audio)
+            const verseTextEl = verseEl.querySelector('.verse-text');
+            if (verseTextEl) {
+                // Show edited text if exists, otherwise original
+                const displayText = getEditedVerseText(translation, currentBookName, chapter, verseNum) || originalText;
+                verseTextEl.textContent = displayText;
+            }
             currentlyEditing = null;
         }
 
@@ -4576,7 +4584,7 @@ ${selectedText}`;
             if (!currentlyEditing) return;
 
             const newText = document.getElementById('verseEditTextarea').value.trim();
-            const { bookName, chapter, verseNum, translation, originalText } = currentlyEditing;
+            const { verseEl, bookName, chapter, verseNum, translation, originalText } = currentlyEditing;
 
             if (newText === originalText) {
                 // Remove edit if restored to original
@@ -4589,8 +4597,13 @@ ${selectedText}`;
 
             const saved = await saveEditedVerses();
             if (saved) {
+                // Update verse text in place without reloading entire chapter
+                verseEl.classList.remove('editing');
+                const verseTextEl = verseEl.querySelector('.verse-text');
+                if (verseTextEl) {
+                    verseTextEl.textContent = newText;
+                }
                 currentlyEditing = null;
-                displayChapter();
             }
         }
 
