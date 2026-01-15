@@ -3904,7 +3904,7 @@ Psalm 111:10`
                             const kjvDisplay = getEditedVerseText('KJV', currentBookName, currentChapter.toString(), verseNumber.toString()) || kjvOriginal;
                             const kjvEscaped = kjvOriginal.replace(/`/g, '\\`').replace(/\$/g, '\\$');
                             html += `
-                                <div class="verse primary-translation${isHighlighted ? ' filtered' : ''}" onclick="enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'KJV', \`${kjvEscaped}\`)">
+                                <div class="verse primary-translation${isHighlighted ? ' filtered' : ''}" onclick="event.stopPropagation(); enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'KJV', \`${kjvEscaped}\`)">
                                     <span class="verse-number">${verseNumber}</span>
                                     <span class="verse-text">${kjvDisplay}</span>
                                     <span class="translation-label">KJV</span>
@@ -3918,7 +3918,7 @@ Psalm 111:10`
                             const webDisplay = getEditedVerseText('WEB', currentBookName, currentChapter.toString(), verseNumber.toString()) || webOriginal;
                             const webEscaped = webOriginal.replace(/`/g, '\\`').replace(/\$/g, '\\$');
                             html += `
-                                <div class="verse secondary-translation${isHighlighted ? ' filtered' : ''}" onclick="enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'WEB', \`${webEscaped}\`)">
+                                <div class="verse secondary-translation${isHighlighted ? ' filtered' : ''}" onclick="event.stopPropagation(); enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'WEB', \`${webEscaped}\`)">
                                     <span class="verse-number">${verseNumber}</span>
                                     <span class="verse-text">${webDisplay}</span>
                                     <span class="translation-label">WEB</span>
@@ -3932,7 +3932,7 @@ Psalm 111:10`
                             const webDisplay = getEditedVerseText('WEB', currentBookName, currentChapter.toString(), verseNumber.toString()) || webOriginal;
                             const webEscaped = webOriginal.replace(/`/g, '\\`').replace(/\$/g, '\\$');
                             html += `
-                                <div class="verse primary-translation${isHighlighted ? ' filtered' : ''}" onclick="enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'WEB', \`${webEscaped}\`)">
+                                <div class="verse primary-translation${isHighlighted ? ' filtered' : ''}" onclick="event.stopPropagation(); enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'WEB', \`${webEscaped}\`)">
                                     <span class="verse-number">${verseNumber}</span>
                                     <span class="verse-text">${webDisplay}</span>
                                     <span class="translation-label">WEB</span>
@@ -3946,7 +3946,7 @@ Psalm 111:10`
                             const kjvDisplay = getEditedVerseText('KJV', currentBookName, currentChapter.toString(), verseNumber.toString()) || kjvOriginal;
                             const kjvEscaped = kjvOriginal.replace(/`/g, '\\`').replace(/\$/g, '\\$');
                             html += `
-                                <div class="verse secondary-translation${isHighlighted ? ' filtered' : ''}" onclick="enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'KJV', \`${kjvEscaped}\`)">
+                                <div class="verse secondary-translation${isHighlighted ? ' filtered' : ''}" onclick="event.stopPropagation(); enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', 'KJV', \`${kjvEscaped}\`)">
                                     <span class="verse-number">${verseNumber}</span>
                                     <span class="verse-text">${kjvDisplay}</span>
                                     <span class="translation-label">KJV</span>
@@ -3984,7 +3984,7 @@ Psalm 111:10`
                     const escapedText = originalText.replace(/`/g, '\\`').replace(/\$/g, '\\$');
 
                     html += `
-                        <div class="verse${isHighlighted ? ' filtered' : ''}" onclick="enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', '${translationABBR}', \`${escapedText}\`)">
+                        <div class="verse${isHighlighted ? ' filtered' : ''}" onclick="event.stopPropagation(); enterVerseEditMode(this, '${currentBookName}', '${currentChapter}', '${verseNumber}', '${translationABBR}', \`${escapedText}\`)">
                             <span class="verse-number">${verseNumber}</span>
                             <span class="verse-text">${displayText}</span>
                         </div>
