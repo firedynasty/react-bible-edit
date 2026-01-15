@@ -4476,8 +4476,20 @@ ${selectedText}`;
                 // API returns { files: { filename: content } }
                 const files = data.files || data;
                 if (files[BIBLE_EDITS_FILENAME]) {
-                    editedVerses = JSON.parse(files[BIBLE_EDITS_FILENAME]);
-                    console.log('Loaded edited verses:', Object.keys(editedVerses), editedVerses);
+                    const rawContent = files[BIBLE_EDITS_FILENAME];
+                    console.log('Raw bible_edits.json content:', rawContent);
+                    editedVerses = JSON.parse(rawContent);
+                    console.log('Loaded edited verses:', JSON.stringify(editedVerses, null, 2));
+                    // Log all stored verses for debugging
+                    for (const trans in editedVerses) {
+                        for (const book in editedVerses[trans]) {
+                            for (const chap in editedVerses[trans][book]) {
+                                for (const verse in editedVerses[trans][book][chap]) {
+                                    console.log(`Stored edit: ${trans} ${book} ${chap}:${verse}`);
+                                }
+                            }
+                        }
+                    }
                 } else {
                     console.log('No edited verses file found. Available files:', Object.keys(files));
                 }
@@ -4490,7 +4502,19 @@ ${selectedText}`;
         async function saveEditedVerses() {
             if (!isEditAuthenticated) return false;
 
-            console.log('Saving edited verses:', JSON.stringify(editedVerses));
+            const contentToSave = JSON.stringify(editedVerses, null, 2);
+            console.log('=== SAVE START ===');
+            console.log('Saving edited verses:', contentToSave);
+            // Log all verses being saved
+            for (const trans in editedVerses) {
+                for (const book in editedVerses[trans]) {
+                    for (const chap in editedVerses[trans][book]) {
+                        for (const verse in editedVerses[trans][book][chap]) {
+                            console.log(`Saving: ${trans} ${book} ${chap}:${verse}`);
+                        }
+                    }
+                }
+            }
 
             try {
                 const response = await fetch(BIBLE_EDIT_API_URL, {
@@ -4498,13 +4522,14 @@ ${selectedText}`;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         filename: BIBLE_EDITS_FILENAME,
-                        content: JSON.stringify(editedVerses, null, 2),
+                        content: contentToSave,
                         accessCode: editAccessCode
                     })
                 });
 
                 const result = await response.json();
                 console.log('Save response:', result);
+                console.log('=== SAVE END ===');
 
                 if (!response.ok) throw new Error('Save failed: ' + JSON.stringify(result));
                 return true;
