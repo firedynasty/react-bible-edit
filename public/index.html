@@ -4525,16 +4525,44 @@ ${selectedText}`;
 
             verseEl.classList.add('editing');
             const verseTextEl = verseEl.querySelector('.verse-text');
-            verseTextEl.innerHTML = `
-                <div class="verse-edit-container">
-                    <textarea class="verse-edit-textarea" id="verseEditTextarea">${editedText}</textarea>
-                    <div class="verse-edit-buttons">
-                        <button onclick="event.stopPropagation(); cancelVerseEdit();" class="secondary">Cancel</button>
-                        <button onclick="event.stopPropagation(); saveVerseEdit();">Save</button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('verseEditTextarea').focus();
+            if (!verseTextEl) {
+                console.error('Could not find .verse-text element');
+                return;
+            }
+
+            // Create elements programmatically to avoid HTML escaping issues
+            const container = document.createElement('div');
+            container.className = 'verse-edit-container';
+
+            const textarea = document.createElement('textarea');
+            textarea.className = 'verse-edit-textarea';
+            textarea.id = 'verseEditTextarea';
+            textarea.value = editedText;
+
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'verse-edit-buttons';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'secondary';
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.onclick = function(e) { e.stopPropagation(); cancelVerseEdit(); };
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = 'Save';
+            saveBtn.onclick = function(e) { e.stopPropagation(); saveVerseEdit(); };
+
+            buttonDiv.appendChild(cancelBtn);
+            buttonDiv.appendChild(saveBtn);
+            container.appendChild(textarea);
+            container.appendChild(buttonDiv);
+
+            verseTextEl.innerHTML = '';
+            verseTextEl.appendChild(container);
+
+            setTimeout(() => {
+                const ta = document.getElementById('verseEditTextarea');
+                if (ta) ta.focus();
+            }, 10);
         }
 
         function cancelVerseEdit() {
